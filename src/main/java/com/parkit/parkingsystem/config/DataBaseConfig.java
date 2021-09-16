@@ -7,13 +7,15 @@ import java.sql.*;
 
 public class DataBaseConfig {
 
+	private static String pathDb = "jdbc:mysql://localhost:3306/prod?serverTimezone=UTC" ;
+	
     private static final Logger logger = LogManager.getLogger("DataBaseConfig");
 
     public Connection getConnection() throws ClassNotFoundException, SQLException {
         logger.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/prod?serverTimezone=UTC","root","rootroot");
+                "pathDb","root","rootroot");
     }
 
     public void closeConnection(Connection con){
