@@ -52,17 +52,26 @@ public class ParkingServiceTest {
             throw  new RuntimeException("Failed to set up test mock objects");
         }
     }*/
-    @Test
-    public void processIncomingVehicleTest(){
- 	   /*Ticket ticket = new Ticket();
- 	   ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
- 	   ticket.setParkingSpot(parkingSpot);
- 	   System.out.println(ticket);
- 	   System.out.println(parkingSpot);
- 	   try {
- 		   when(parkingService.getNextParkingNumberIfAvailable()).thenReturn(parkingSpot);
- 		   when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
- 		   when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("PEIO");*/    	
+   /* public void processIncomingVehicleTest(){
+    Ticket ticket = new Ticket();
+	   ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+	   ticket.setParkingSpot(parkingSpot);
+	   System.out.println(ticket);
+	   System.out.println(parkingSpot);
+	   try {
+		   when(parkingService.getNextParkingNumberIfAvailable()).thenReturn(parkingSpot);
+		   when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+		   when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("PEIO");
+	   }
+	   catch (Exception e) {
+   			e.printStackTrace();   
+		   
+	   } 
+	}*/
+	 
+		   
+	@Test
+    public void processIncomingVehicleSaveTicketPassTest(){ 	
     	try {
     		when(inputReaderUtil.readSelection()).thenReturn(1);
     		when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
@@ -70,13 +79,55 @@ public class ParkingServiceTest {
     		parkingService=new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);    		
     		parkingService.processIncomingVehicle();
     		verify(ticketDAO).saveTicket(any(Ticket.class));
-    		
- 	} catch (Exception e) {
- 		e.printStackTrace();
- 		fail("marche po");
- 	}
+    		}
+    		catch (Exception e) {
+    			e.printStackTrace();
+    			fail("Failed to set to set up test mock ticket");
+    		}
    }
-    	
+    
+    @Test
+    public void getNextParkingNumberIfAvailableTest (){   	
+    	try {
+    	when(inputReaderUtil.readSelection()).thenReturn(1);
+    	when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+    	parkingService.getNextParkingNumberIfAvailable();
+    	assertEquals(parkingSpotDAO.getNextAvailableSlot());
+    	}
+    	catch (Exception e) {
+    	e.printStackTrace();
+		fail("Failed to find a parkingSpot ");
+    	}
+    }	
+    @Test
+    public void processIncomingVehicleSaveTicketFailsDueToVehicleTypeTest(){ 	
+    	try {
+    	when(inputReaderUtil.readSelection()).thenReturn(5);
+    	when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+    	when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("PEIO");
+    	parkingService=new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);    		
+    	parkingService.processIncomingVehicle();
+    	verify(ticketDAO).saveTicket(any(Ticket.class));
+    		}
+    		catch (Exception e) {
+    			e.printStackTrace();
+    		}
+   }
+    @Test
+    public void processIncomingVehicleSaveTicketFailsDueToParkingSpotTest(){ 	
+    	try {
+    	when(inputReaderUtil.readSelection()).thenReturn(1);
+    	when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(0);
+    	when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("PEIO");
+    	parkingService=new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);    		
+    	parkingService.processIncomingVehicle();
+    	(ticketDAO).saveTicket(any(Ticket.class));
+    		}
+    		catch (Exception e) {
+    			e.printStackTrace();
+    		}
+   }
+    
     @Test
     public void processExitingVehicleTest(){
     	try {
@@ -95,10 +146,10 @@ public class ParkingServiceTest {
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
             parkingService.processExitingVehicle();
             verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
-    	}
-    	catch (Exception e) {
-             e.printStackTrace();
-             throw  new RuntimeException("Failed to set up test mock objects");
-      }
+    		}
+    		catch (Exception e) {
+    			e.printStackTrace();
+            	throw  new RuntimeException("Failed to set up test mock objects");
+         }
     }
 }
