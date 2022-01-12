@@ -24,8 +24,6 @@ public class TicketDAO {
         try {
             con = dataBaseConfig.getConnection();
             PreparedStatement ps = con.prepareStatement(DBConstants.SAVE_TICKET);
-            //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
-            //ps.setInt(1,ticket.getId());
             ps.setInt(1,ticket.getParkingSpot().getId());
             ps.setString(2, ticket.getVehicleRegNumber());
             ps.setDouble(3, ticket.getPrice());
@@ -43,10 +41,10 @@ public class TicketDAO {
     public Ticket getTicket(String vehicleRegNumber) {
         Connection con = null;
         Ticket ticket = null;
+        boolean rec = getTicketRecurrent(vehicleRegNumber);
         try {
             con = dataBaseConfig.getConnection();
             PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
-            //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
             ps.setString(1,vehicleRegNumber);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
@@ -58,9 +56,11 @@ public class TicketDAO {
                 ticket.setPrice(rs.getDouble(3));
                 ticket.setInTime(rs.getTimestamp(4));
                 ticket.setOutTime(rs.getTimestamp(5));
+                ticket.setRecurrent(rec);
             }
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
+            
         }catch (Exception ex){
             logger.error("Error fetching next available slot",ex);
         }finally {
@@ -69,6 +69,28 @@ public class TicketDAO {
         }
     }
 
+    public boolean getTicketRecurrent(String vehicleRegNumber) {
+        Connection con = null;
+        Boolean isRecurrent=false;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement psR = con.prepareStatement(DBConstants.GET_TICKET_RECURRENT);
+            psR.setString(1,vehicleRegNumber);
+            ResultSet rsR = psR.executeQuery();
+            if(rsR.next()){
+            	isRecurrent= rsR.getBoolean(1);	            	
+            }
+            dataBaseConfig.closeResultSet(rsR);
+            dataBaseConfig.closePreparedStatement(psR);
+       
+        }catch (Exception ex){
+            logger.error("Error fetching next available slot",ex);
+        }finally {
+            dataBaseConfig.closeConnection(con);
+            return isRecurrent;
+        }
+    }
+    
     public boolean updateTicket(Ticket ticket) {
         Connection con = null;
         try {

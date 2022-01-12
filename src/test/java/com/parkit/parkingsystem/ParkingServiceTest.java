@@ -36,48 +36,10 @@ public class ParkingServiceTest {
     	parkingService= new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
     	
     	
-    }
-   /* @BeforeEach
-    private void setUpPerTest() {
-        try {
-            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-
-            ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
-            Ticket ticket = new Ticket();
-            ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
-            ticket.setParkingSpot(parkingSpot);
-            ticket.setVehicleRegNumber("ABCDEF");
-            when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-            when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-
-            when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
-
-            parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw  new RuntimeException("Failed to set up test mock objects");
-        }
-    }*/
-   /* public void processIncomingVehicleTest(){
-    Ticket ticket = new Ticket();
-	   ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
-	   ticket.setParkingSpot(parkingSpot);
-	   System.out.println(ticket);
-	   System.out.println(parkingSpot);
-	   try {
-		   when(parkingService.getNextParkingNumberIfAvailable()).thenReturn(parkingSpot);
-		   when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-		   when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("PEIO");
-	   }
-	   catch (Exception e) {
-   			e.printStackTrace();   
-		   
-	   } 
-	}*/
-	 
+    }	 
 		   
 	@Test
-    public void processIncomingVehicleSaveTicketPassTest(){ 	
+    public void processIncomingVehicleSaveTicketTest(){ 	
     	try {
     		when(inputReaderUtil.readSelection()).thenReturn(1);
     		when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
@@ -93,25 +55,12 @@ public class ParkingServiceTest {
    }
     
     @Test
-    public void getNextParkingNumberIfAvailableTest () throws Exception {
+    public void getNextParkingNumberIfAvailablePassTest () throws Exception {
     	when(inputReaderUtil.readSelection()).thenReturn(2);
     	when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(3);
     	ParkingSpot spot = parkingService.getNextParkingNumberIfAvailable();
     	assertEquals(spot, new ParkingSpot(3, ParkingType.BIKE,true));
     }	
-    @Test
-    public void getNextParkingNumberIfAvailableFailsDueToVehicleTypeTest(){ 
-    	when(inputReaderUtil.readSelection()).thenReturn(5);
-    	ParkingSpot spot = parkingService.getNextParkingNumberIfAvailable();    		
-    	assertEquals(spot, null);
-   }
-    @Test
-    public void getNextParkingNumberIfAvailableFailsDueToUnkownSpotTest(){ 
-    	when(inputReaderUtil.readSelection()).thenReturn(1);
-    	when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(0);
-    	ParkingSpot spot = parkingService.getNextParkingNumberIfAvailable();    		
-    	assertEquals(spot, null);
-   }
     
     @Test
     public void processExitingVehicleTrueTest(){
@@ -157,5 +106,5 @@ public class ParkingServiceTest {
     			fail("test not working");
             	throw  new RuntimeException("Failed to set up test mock objects");
          }
-    }
+      }
     }

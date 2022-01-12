@@ -151,4 +151,36 @@ public class FareCalculatorServiceTest {
         fareCalculatorService.calculateFare(ticket);
         assertEquals( (0) , ticket.getPrice());
     }
+    
+    @SuppressWarnings("unlikely-arg-type")
+	@Test
+    public void calculatedFareForCarIsRecurrent5percent() {
+    	Date inTime = new Date();
+    	inTime.setTime( System.currentTimeMillis() - (  60 * 60 * 1000) );
+    	Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        ticket.setRecurrent(true); //isRecurrent should give 5percent parking fare for car
+        fareCalculatorService.calculateFare(ticket);
+        equals( (ticket.getPrice()*0.95));
+    }
+    
+    @SuppressWarnings("unlikely-arg-type")
+	@Test
+    public void calculatedFareForBikeIsRecurrent5percent() {
+    	Date inTime = new Date();
+    	inTime.setTime( System.currentTimeMillis() - (  60 * 60 * 1000) );
+    	Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        ticket.setRecurrent(true); //isRecurrent should give 5percent parking fare for bike
+        fareCalculatorService.calculateFare(ticket);
+        equals( (ticket.getPrice()*0.95));
+    }
 }
